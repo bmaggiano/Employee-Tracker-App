@@ -28,17 +28,83 @@ const questionOne = function questionOne() {
     .then((data) => {
         switch(data.options) {
             case "View all employees":
-                viewAll();
+                viewEmployees();
                 break;
+            case "View all departments":
+                viewDepartments();
+                break;
+            case "View all roles":
+                viewRoles();
+                break;
+            case "Add an employee":
+                addEmployee();
+                break;
+
         }
     })
 } 
 
-async function viewAll() {
+async function viewEmployees() {
 db.query('SELECT * FROM employee', function (err, results) {
     console.table(results);
     questionOne()
 })
 }
+
+async function viewDepartments() {
+    db.query('SELECT * FROM department', function (err, results) {
+        console.table(results);
+        questionOne()
+    })
+}
+async function viewRoles() {
+    db.query('SELECT * FROM roles', function (err, results) {
+        console.table(results);
+        questionOne()
+    })
+}
+
+const rolesArr = []
+const selectRole = function selectRole() {
+    db.query('SELECT title FROM roles', function (err, results) {
+        for (let i=0; i<results.length; i++) {
+            rolesArr.push(results[i].title);
+        }
+    })
+    return rolesArr;
+}
+
+const departmentsArr = []
+const selectDepartment = function selectDepartment() {
+    db.query('SELECT title FROM roles', function (err, results) {
+        for (let i=0; i<results.length; i++) {
+            rolesArr.push(results[i].title);
+        }
+    })
+    return rolesArr;
+}
+
+
+
+async function addEmployee() {
+    const prompt = inquirer.createPromptModule()
+    prompt([
+        {
+            name: "employeeFName",
+            message: "What is the employee's first name?",
+        },
+        {
+            name: "employeeLName",
+            message: "What is the employee's last name?",
+        },
+        {
+            type: "list",
+            name: "employeeRole",
+            message: "What is the employee's role?",
+            choices: selectRole()
+        }
+    ])
+}
+
 
 questionOne();
