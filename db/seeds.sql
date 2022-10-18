@@ -1,5 +1,5 @@
-INSERT INTO department (name)
-VALUES ('Management')
+INSERT INTO department (department_name)
+VALUES ('Management'),
     ('Sales'),
     ('HR'),
     ('Engineering'),
@@ -7,7 +7,7 @@ VALUES ('Management')
 
 
 INSERT INTO roles (title, salary, department_id)
-VALUES ('Lead Manager', 80000.00, 1)
+VALUES ('Lead Manager', 80000.00, 1),
     ('Sales Associate', 50000.00, 2),
     ('HR Head', 60000.00, 3),
     ('Senior Engineer', 120000.00, 4),
@@ -23,7 +23,7 @@ VALUES ("Brandon", "Maggiano", 4, 2),
        ("Amber", "Maggiano", 3, 2),
        ("Kevin", "Finkmister", 5, 1),
        ("Ana", "Bertoli", 2, 2),
-       ("Ravish", "Lavish", 6, 0);
-       ("Larry", "DaCableGuy", 7, 2);
-       ("Mew", "Two", 8, 0);
+       ("Ravish", "Lavish", 6, 0),
+       ("Larry", "DaCableGuy", 7, 2),
+       ("Mew", "Two", 8, 0),
        ("Skylar", "Gravy", 8, 0);
