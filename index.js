@@ -74,14 +74,14 @@ const selectRole = function selectRole() {
     return rolesArr;
 }
 
-const departmentsArr = []
-const selectDepartment = function selectDepartment() {
-    db.query('SELECT title FROM roles', function (err, results) {
+const managerArr = []
+const selectManager = function selectManager() {
+    db.query('SELECT first_name, last_name FROM employee', function (err, results) {
         for (let i=0; i<results.length; i++) {
-            rolesArr.push(results[i].title);
+            managerArr.push(`${results[i].first_name} ${results[i].last_name}`);
         }
     })
-    return rolesArr;
+    return managerArr;
 }
 
 
@@ -101,9 +101,23 @@ async function addEmployee() {
             type: "list",
             name: "employeeRole",
             message: "What is the employee's role?",
-            choices: selectRole()
+            choices: selectRole(),
+        },
+        {
+            type: "list",
+            name: "employeeManager",
+            message: "Does this employee have a manager?",
+            choices: selectManager()
         }
     ])
+    .then((data) => {
+        const roleId = selectRole().indexOf(data.employeeRole) + 1
+        const managerId = selectManager().indexOf(data.employeeManager) + 1
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+        VALUES ("${data.employeeFName}", "${data.employeeLName}", ${roleId}, ${managerId})`)
+        console.log("Employee Added Successfully")
+        questionOne()
+    })
 }
 
 
