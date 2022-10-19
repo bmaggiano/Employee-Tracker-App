@@ -22,7 +22,7 @@ const questionOne = function questionOne() {
             name: "options",
             message: "Please choose an option from the list below",
             choices: ["View all departments", "View all roles", "View all employees", "Add a department",
-        "Add an employee", "Update an employee role"]
+        "Add a role", "Add an employee", "Update an employee role"]
         }
     ])
     .then((data) => {
@@ -39,7 +39,12 @@ const questionOne = function questionOne() {
             case "Add an employee":
                 addEmployee();
                 break;
-
+            case "Add a role":
+                addRole();
+                break;
+            case "Add a department":
+                addDepartment();
+                break;
         }
     })
 } 
@@ -62,6 +67,16 @@ async function viewRoles() {
         console.table(results);
         questionOne()
     })
+}
+
+const departmentArr = []
+const selectDepartment = function selectDepartment() {
+    db.query('SELECT department_name FROM department', function (err, results) {
+        for (let i=0; i<results.length; i++) {
+            departmentArr.push(results[i].department_name);
+        }
+    })
+    return departmentArr;
 }
 
 const rolesArr = []
@@ -120,6 +135,33 @@ async function addEmployee() {
     })
 }
 
+async function addRole() {
+    const prompt = inquirer.createPromptModule()
+    prompt([
+        {
+            name: "roleTitle",
+            message: "What is the title of the role?",
+        },
+        {
+            type: "number",
+            name: "roleSalary",
+            message: "What is salary of this role?",
+        },
+        {
+            type: "list",
+            name: "roleDepartment",
+            message: "What department does this role belong to?",
+            choices: selectDepartment(),
+        }
+    ])
+    .then((data) => {
+        const departmentId = selectDepartment().indexOf(data.roleDepartment) + 1
+        db.query(`INSERT INTO roles (title, salary, department_id)
+        VALUES ("${data.roleTitle}", "${data.roleSalary}", ${departmentId})`)
+        console.log("Role Added Successfully");
+        questionOne()
+    })
+};
 
 
 
