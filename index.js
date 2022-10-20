@@ -71,7 +71,7 @@ async function viewDepartments() {
 
 // Function to view all roles
 async function viewRoles() {
-    db.query('SELECT * FROM roles', function (err, results) {
+    db.query('SELECT title, salary, department_name FROM roles JOIN department ON department.id = roles.department_id', function (err, results) {
         console.table(results);
         questionOne()
     })
