@@ -50,7 +50,7 @@ const questionOne = function questionOne() {
 } 
 
 async function viewEmployees() {
-db.query('SELECT * FROM employee', function (err, results) {
+db.query('SELECT employee.first_name, employee.last_name, roles.salary FROM roles JOIN employee ON roles.id = employee.role_id', function (err, results) {
     console.table(results);
     questionOne()
 })
@@ -135,7 +135,7 @@ async function addEmployee() {
     })
 }
 
-async function addRole() {
+const addRole = function addRole() {
     const prompt = inquirer.createPromptModule()
     prompt([
         {
