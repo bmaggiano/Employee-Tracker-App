@@ -23,7 +23,7 @@ const questionOne = function questionOne() {
             name: "options",
             message: "Please choose an option from the list below",
             choices: ["View all departments", "View all roles", "View all employees", "Add a department",
-        "Add a role", "Add an employee", "Update an employee role", "View total utilized budget"]
+        "Add a role", "Add an employee", "Update an employee role"]
         }
     ])
     .then((data) => {
