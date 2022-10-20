@@ -1,3 +1,5 @@
+-- Seed the database with SOURCE seeds.sql;
+
 INSERT INTO department (department_name)
 VALUES ('Management'),
     ('Sales'),

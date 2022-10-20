@@ -1,6 +1,8 @@
+// Dependencies and installs
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
+// Creating connection to mysql db
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -11,9 +13,8 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_tracker DB`)
 );
 
-
-
-
+// First question using inquirer, will present user a list of questions and then with a swtich statement
+// we will respond accordingly
 const questionOne = function questionOne() {
     const prompt = inquirer.createPromptModule()
     prompt([
@@ -45,23 +46,30 @@ const questionOne = function questionOne() {
             case "Add a department":
                 addDepartment();
                 break;
+            case "Update an employee role":
+                updateEmployee();
+                break;
         }
     })
 } 
 
+// Function to view all employees
 async function viewEmployees() {
-db.query('SELECT employee.first_name, employee.last_name, roles.salary FROM roles JOIN employee ON roles.id = employee.role_id', function (err, results) {
+db.query(`SELECT first_name, last_name, title, salary, department_name FROM employee JOIN roles ON roles.id = employee.role_id JOIN department ON department.id = roles.department_id`, function (err, results) {
     console.table(results);
     questionOne()
 })
 }
 
+// Function to view all departments
 async function viewDepartments() {
     db.query('SELECT * FROM department', function (err, results) {
         console.table(results);
         questionOne()
     })
 }
+
+// Function to view all roles
 async function viewRoles() {
     db.query('SELECT * FROM roles', function (err, results) {
         console.table(results);
@@ -69,6 +77,7 @@ async function viewRoles() {
     })
 }
 
+// Function to pull department data from sql and convert into array for inquirer choices
 const departmentArr = []
 const selectDepartment = function selectDepartment() {
     db.query('SELECT department_name FROM department', function (err, results) {
@@ -79,6 +88,7 @@ const selectDepartment = function selectDepartment() {
     return departmentArr;
 }
 
+// Function to pull roles data from sql and convert into array for inquirer choices
 const rolesArr = []
 const selectRole = function selectRole() {
     db.query('SELECT title FROM roles', function (err, results) {
@@ -89,6 +99,7 @@ const selectRole = function selectRole() {
     return rolesArr;
 }
 
+// Function to pull manager data from sql and convert into array for inquirer choices
 const managerArr = []
 const selectManager = function selectManager() {
     db.query('SELECT first_name, last_name FROM employee', function (err, results) {
@@ -99,8 +110,50 @@ const selectManager = function selectManager() {
     return managerArr;
 }
 
+// Function to pull employee data from sql and convert into array for inquirer choices
+const employeeArr = []
+const selectEmployee = function selectEmployee() {
+    db.query('SELECT first_name, last_name FROM employee', function (err, results) {
+        for (let i=0; i<results.length; i++) {
+            employeeArr.push(`${results[i].first_name} ${results[i].last_name}`);
+        }
+    })
+    return employeeArr;
+}
 
+// Function to update employee data based on inquirer input
+async function updateEmployee() {
+    const prompt = inquirer.createPromptModule()
+    prompt([
+        {
+            type: 'confirm',
+            name: 'yousure',
+            message: "Are you sure you would like to update an employee's role?"
+        },
+        {
+            type: "list",
+            name: "employee",
+            message: "Please select an employee.",
+            choices: selectEmployee()
+        },
+        {
+            type: "list",
+            name: "newRole",
+            message: "Please select a new role for this employee.",
+            choices: selectRole()
+        },
 
+    ])
+    .then((data) => {
+        const newRoleId = selectRole().indexOf(data.newRole) + 1
+        const employee = selectEmployee().indexOf(data.employee) + 1
+        db.query(`UPDATE employee SET role_id = ${newRoleId} WHERE id = ${employee}`)
+        console.log(`Updated ${data.employee}'s role!`)
+        questionOne()
+    })
+}
+
+// Function to add an employee based off of inquirer input
 async function addEmployee() {
     const prompt = inquirer.createPromptModule()
     prompt([
@@ -135,6 +188,7 @@ async function addEmployee() {
     })
 }
 
+// Function to add a new role based on inquirer input
 const addRole = function addRole() {
     const prompt = inquirer.createPromptModule()
     prompt([
@@ -163,8 +217,23 @@ const addRole = function addRole() {
     })
 };
 
+// Function to add a new department based on inquirer input
+const addDepartment = function addDepartment() {
+    const prompt = inquirer.createPromptModule()
+    prompt([
+        {
+            name: "departmentName",
+            message: "What is the department name?",
+        }
+    ])
+    .then((data) => {
+        // const departmentName = selectDepartment().indexOf(data.roleDepartment) + 1
+        db.query(`INSERT INTO department (department_name)
+        VALUES ("${data.departmentName}")`)
+        console.log("Department Added Successfully");
+        questionOne()
+    })
+}
 
-
-
-
+// Call question one to kick off the process
 questionOne();
