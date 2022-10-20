@@ -10,6 +10,8 @@ This employee tracker app is a testimate to what relational database programming
 
 Make sure to use npm i to install the dependencies included in this app.
 
+Also be sure to navigate to the db folder and source the schema.sql and seeds.sql file to import the db, tables, and data.
+
 ## Credits
 
 We are using inquirer@8.2.4 (npm i inquirer@8.2.4), MySQL, and Node.js for this application.
