@@ -8,6 +8,8 @@ This employee tracker app is a testimate to what relational database programming
 
 [Employee Tracker Demo.webm](https://user-images.githubusercontent.com/103971233/196864337-3ff38dcf-76e9-42a3-bc2c-a46668a4ce6e.webm)
 
+Make sure to use npm i to install the dependencies included in this app.
+
 ## Credits
 
 We are using inquirer@8.2.4 (npm i inquirer@8.2.4), MySQL, and Node.js for this application.
